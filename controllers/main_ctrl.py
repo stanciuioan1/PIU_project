@@ -8,4 +8,7 @@ Aici facem urmatoarele:
 
 
 class MainController(QObject):
-    pass
+    def __init__(self, model):
+        super().__init__()
+        self._model = model
+    

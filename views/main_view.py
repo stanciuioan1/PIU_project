@@ -11,4 +11,10 @@ Aici definim:
 
 
 class MainView(QMainWindow):
-    pass
+    def __init__(self, model, main_controller):
+        super().__init__()
+        self._model = model
+        self.main_controller = main_controller
+        
+        # ... connect-uri cu gramada intre ce definim aici si ce e in controller
+        # de asemenea, ascultam pentru semnale din model

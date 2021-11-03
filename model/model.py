@@ -9,4 +9,5 @@ aici facem urmatoarele:
 
 
 class Model(QObject):
-    pass
+    def __init__(self):
+        super().__init__()
