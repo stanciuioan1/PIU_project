@@ -1,5 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QMenuBar, QVBoxLayout, QPushButton, QWidget \
     , QMenuBar, QMenu
+from PySide6.QtGui import QAction
+
 
 
 '''
@@ -15,7 +17,7 @@ class MainView(QMainWindow):
     def __init__(self, model, main_controller):
         super().__init__()
         self._model = model
-        self.main_controller = main_controller
+        self._main_controller = main_controller
         self.setWindowTitle("SubMaker 2021")
         #self.resize(400,200)
         main_vbox = QVBoxLayout()
@@ -30,9 +32,13 @@ class MainView(QMainWindow):
 
         fileMenu = QMenu("&File", self)
         menuBar.addMenu(fileMenu)
+        load_video = QAction("Load Video", self)
+        save_video = QAction("Save Video", self)
+        fileMenu.addAction(load_video)
+        fileMenu.addAction(save_video)
         self.setMenuBar(menuBar)
 
-    
+        fileMenu.triggered[QAction].connect(self._main_controller.file_handler)
 
         widget = QWidget()
         widget.setLayout(main_vbox)
