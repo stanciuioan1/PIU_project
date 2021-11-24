@@ -1,4 +1,9 @@
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QMenuBar, QVBoxLayout, QPushButton, QWidget \
+    , QMenuBar, QMenu
+from PySide6.QtGui import QAction
+from PySide6.QtMultimedia import QMediaPlayer
+from PySide6.QtMultimediaWidgets import QVideoWidget
+
 
 
 '''
@@ -14,7 +19,46 @@ class MainView(QMainWindow):
     def __init__(self, model, main_controller):
         super().__init__()
         self._model = model
-        self.main_controller = main_controller
-        
-        # ... connect-uri cu gramada intre ce definim aici si ce e in controller
-        # de asemenea, ascultam pentru semnale din model
+        self._main_controller = main_controller
+        self.setWindowTitle("SubMaker 2021")
+        self.resize(400,200)
+        main_vbox = QVBoxLayout()
+        main_vbox.addStretch(1)
+        main_vbox.SetFixedSize
+        '''
+        button1 = QPushButton(text="1")
+        main_vbox.addWidget(button1)
+        button2 = QPushButton(text="2")
+        main_vbox.addWidget(button2)
+        '''
+        menuBar = QMenuBar()   
+
+        fileMenu = QMenu("&File", self)
+        menuBar.addMenu(fileMenu)
+        load_video = QAction("Load Video", self)
+        save_video = QAction("Save Video", self)
+        fileMenu.addAction(load_video)
+        fileMenu.addAction(save_video)
+        self.setMenuBar(menuBar)
+
+        widget = QWidget()
+        widget.setLayout(main_vbox)
+        self.setCentralWidget(widget)
+
+
+
+        self.media_player = QMediaPlayer(widget)
+        self.video_widget = QVideoWidget(widget)
+        self.video_widget.resize(500, 500)
+
+
+        fileMenu.triggered[QAction].connect(self._main_controller.file_handler)
+        fileMenu.triggered[QAction].connect(self.add_media)
+
+    def add_media(self):
+        self.media_player.setSource(self._main_controller.url)
+        self.media_player.setVideoOutput(self.video_widget)
+        self.media_player.play()
+
+    # ... connect-uri cu gramada intre ce definim aici si ce e in controller
+    # de asemenea, ascultam pentru semnale din model
