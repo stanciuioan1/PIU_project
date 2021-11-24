@@ -1,4 +1,4 @@
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, QDir
 from PySide6.QtMultimedia import QMediaPlayer
 from PySide6.QtWidgets import QFileDialog, QDialog
 
@@ -27,10 +27,9 @@ class MainController(QObject):
     
     def load_video(self):
         file_dialog = QFileDialog(None)
-        file_dialog.setDirectory("/home/stoian")
+        file_dialog.setDirectory(QDir.currentPath())
         if(file_dialog.exec() == QDialog.Accepted):
             url = file_dialog.selectedUrls()[0]
-            print(url)
             return url
 
 

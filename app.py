@@ -16,7 +16,7 @@ class App(QApplication):
         self.model = Model()
         self.main_controller = MainController(self.model)
         self.main_view = MainView(self.model, self.main_controller)
-        self.main_view.show()
+        self.main_view.showMaximized()
 
 
 if __name__ == "__main__":
