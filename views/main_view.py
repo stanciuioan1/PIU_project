@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QMenuBar, Q
 from PySide6.QtGui import QAction
 from PySide6.QtMultimedia import QAudio, QAudioOutput, QMediaPlayer
 from PySide6.QtMultimediaWidgets import QGraphicsVideoItem, QVideoWidget
-from PySide6.QtCore import QSizeF
+from PySide6.QtCore import QSizeF, Qt
 
 
 
@@ -22,6 +22,11 @@ class MainView(QMainWindow):
         self._model = model
         self._main_controller = main_controller
         self.setWindowTitle("SubMaker 2021")
+
+        with open('./resources/dark.qss', 'r') as f:
+            self.stylesheet = f.read() 
+            self.setStyleSheet(self.stylesheet)
+
         self.main_vbox = QVBoxLayout()
         self.main_vbox.addStretch(1)
 
@@ -53,21 +58,23 @@ class MainView(QMainWindow):
         #self.video_widget.resize(self.screen().availableGeometry().width(), self.screen().availableGeometry().height()/2)
         #self.main_vbox.addWidget(self.video_widget)
         self.video_item = QGraphicsVideoItem()
-        self.video_item.setSize(QSizeF(640, 480))
+        self.video_item.setSize(QSizeF(800, 600))
         self.scene = QGraphicsScene(self)
         self.graphics_view = QGraphicsView(self.scene)
         self.scene.addItem(self.video_item)
+        self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
         self.main_vbox.addWidget(self.graphics_view)
 
         self.main_hbox = QHBoxLayout()
         self.main_vbox.addLayout(self.main_hbox)
 
         self.text_widget = QTextEdit()
-        self.text_widget.resize(self.geometry().width()*2, self.geometry().height())
+        #self.text_widget.resize(self.geometry().width()*2, self.geometry().height())
         self.main_hbox.addWidget(self.text_widget)
 
         self.add_line_button = QPushButton()
         self.add_line_button.setText("Adauga replica")
+        self.add_line_button.setMinimumHeight(self.text_widget.height()/4)
         self.main_hbox.addWidget(self.add_line_button)
 
         
