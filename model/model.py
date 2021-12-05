@@ -11,3 +11,11 @@ aici facem urmatoarele:
 class Model(QObject):
     def __init__(self):
         super().__init__()
+        self.lines = ""
+
+    def add_line(self, line, time):
+        self.lines = self.lines + str(line) + " " + str(time) + "\n"
+
+    def export_to_srt(self):
+        with open("out.srt", 'w', encoding='utf-8') as f:
+            f.write(self.lines)
