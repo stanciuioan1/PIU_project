@@ -1,0 +1,3 @@
+opencv-python >= 4.5.4.0
+moviepy == 1.0.3
+PySide6 == 6.2.1
