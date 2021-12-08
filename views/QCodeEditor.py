@@ -29,7 +29,7 @@ class QCodeEditor(QPlainTextEdit):
         while max_value >= 10:
             max_value /= 10
             digits += 1
-        space = 3 + self.fontMetrics().maxWidth() * digits
+        space = 3 + self.fontMetrics().averageCharWidth() * digits
         return space
 
     def updateLineNumberAreaWidth(self, _):

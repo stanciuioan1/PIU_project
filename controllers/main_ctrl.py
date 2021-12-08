@@ -40,6 +40,6 @@ class MainController(QObject):
     def save_video(self):
         pass
 
-    def line_handler(self, line, time):
-        print(line + ' ' + str(time))
-        self._model.add_line(line, time)
+    def line_handler(self, line, time, previous_time):
+        #print(line + ' ' + str(previous_time) + ' ' + str(time))
+        self._model.add_line(line, time, previous_time)

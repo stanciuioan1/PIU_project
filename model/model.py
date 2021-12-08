@@ -13,8 +13,8 @@ class Model(QObject):
         super().__init__()
         self.lines = ""
 
-    def add_line(self, line, time):
-        self.lines = self.lines + str(line) + " " + str(time) + "\n"
+    def add_line(self, line, time, previous_time):
+        self.lines = self.lines + str(line) + " " + str(previous_time) + ' ' + str(time) + "\n"
 
     def export_to_srt(self):
         with open("out.srt", 'w', encoding='utf-8') as f:

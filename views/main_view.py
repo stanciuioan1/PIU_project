@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QMenuBar, QVBoxLayout, QPushButton, QWidget \
-    , QMenuBar, QMenu, QTextEdit, QGraphicsScene, QGraphicsView
+from PySide6.QtWidgets import QDialogButtonBox, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QMenuBar, QStackedLayout, QVBoxLayout, QPushButton, QWidget \
+    , QMenuBar, QMenu, QTextEdit, QGraphicsScene, QGraphicsView, QDialog, QSlider, QStyle, QGraphicsProxyWidget
 from PySide6.QtGui import QAction
 from PySide6.QtMultimedia import QAudio, QAudioOutput, QMediaPlayer
 from PySide6.QtMultimediaWidgets import QGraphicsVideoItem, QVideoWidget
@@ -23,6 +23,8 @@ class MainView(QMainWindow):
         self._model = model
         self._main_controller = main_controller
         self.setWindowTitle("SubMaker 2021")
+
+        self.previous_line_time = 0
 
         with open('./resources/dark.qss', 'r') as f:
             self.stylesheet = f.read() 
@@ -56,6 +58,37 @@ class MainView(QMainWindow):
         self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
         self.main_vbox.addWidget(self.graphics_view)
 
+        #self.video_stack = QStackedLayout()
+        #self.main_vbox.addLayout(self.video_stack)
+        #self.video_stack.addWidget(self.graphics_view)
+
+        self.subtitle_label = QLabel()
+        self.subtitle_label.setText("Testare!!!!")
+        self.subtitle_label.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
+        self.subtitle_label.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+        self.subtitle_label.setAttribute(Qt.WA_TranslucentBackground)
+        self.proxy_label = self.scene.addWidget(self.subtitle_label)
+        self.proxy_label.setPos(self.scene.width()/2, self.scene.height() - 150)
+        #self.video_stack.setCurrentIndex(1)
+
+        self.second_hbox = QHBoxLayout()
+        self.main_vbox.addLayout(self.second_hbox)
+        self.counter_play_pause = 0
+        self.play_button = QPushButton()
+        self.play_button.setFixedHeight(36)
+        self.play_button.setFixedWidth(36)
+        self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
+        self.second_hbox.addWidget(self.play_button)
+
+        self.position_slider = QSlider(Qt.Horizontal)
+        self.position_slider.setRange(0, 0)
+        self.position_slider.setEnabled(True)
+        self.media_player.positionChanged.connect(self.position_changed)
+        self.media_player.durationChanged.connect(self.duration_changed)
+
+        self.second_hbox.addWidget(self.position_slider)
+
         self.main_hbox = QHBoxLayout()
         self.main_vbox.addLayout(self.main_hbox)
 
@@ -75,20 +108,58 @@ class MainView(QMainWindow):
 
         self.fileMenu.triggered[QAction].connect(self._main_controller.file_handler)
         self.fileMenu.triggered[QAction].connect(self.add_media)
-        self.save_srt.triggered.connect(self._model.export_to_srt)
+        self.save_srt.triggered.connect(self.export_to_srt)
         
         self.add_line_button.clicked.connect(self.add_line)
+        self.play_button.clicked.connect(self.my_play)
+        self.position_slider.sliderMoved.connect(self.set_position)
 
+
+    def duration_changed(self, duration):
+        self.position_slider.setRange(0, duration)
+
+
+    def position_changed(self, position):
+        self.position_slider.setValue(position)
+
+
+    def set_position(self, position):
+        self.media_player.setPosition(position)
+
+    def my_play(self):
+        self.counter_play_pause += 1
+        if(self.counter_play_pause % 2 == 1):
+            self.media_player.play()
+            self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        else:
+            self.media_player.pause()
+            self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
+    
+    def export_to_srt(self):
+        try:
+            self._model.export_to_srt()
+            dlg = QDialog(self)
+            dlg.setWindowTitle("Success!")
+            dlg.exec()
+        except Exception:
+            dlg = QDialog(self)
+            dlg.setWindowTitle("Fail")
+            
+
+    
     def add_media(self):
         self.media_player.setSource(self._main_controller.url)
         self.media_player.setVideoOutput(self.video_item)
         self.media_player.play()
+        self.media_player.pause()
 
     def add_line(self):
         line = self.text_widget.toPlainText()
         time = self.media_player.position()
         self.text_widget.clear()
-        self._main_controller.line_handler(line, time)
+        self._main_controller.line_handler(line, time, self.previous_line_time)
+        self.previous_line_time = time
 
 
     # ... connect-uri cu gramada intre ce definim aici si ce e in controller
