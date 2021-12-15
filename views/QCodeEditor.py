@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QRect, QSize
+from PySide6.QtCore import Qt, QRect, QSize, QEvent
 from PySide6.QtWidgets import QWidget, QPlainTextEdit, QTextEdit
 from PySide6.QtGui import QColor, QPainter, QTextFormat
 
@@ -22,6 +22,15 @@ class QCodeEditor(QPlainTextEdit):
         self.updateRequest.connect(self.updateLineNumberArea)
         self.cursorPositionChanged.connect(self.highlightCurrentLine)
         self.updateLineNumberAreaWidth(0)
+        self.installEventFilter(self)
+
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress and obj is self:
+            if event.key() == Qt.Key_Enter and self.hasFocus():
+                print("Enter pressed")
+        return super().eventFilter(obj, event)
+        
 
     def lineNumberAreaWidth(self):
         digits = 1
@@ -51,13 +60,13 @@ class QCodeEditor(QPlainTextEdit):
     def highlightCurrentLine(self):
         extraSelections = []
         if not self.isReadOnly():
-            selection = QTextEdit.ExtraSelection()
+            self.selection = QTextEdit.ExtraSelection()
             lineColor = QColor(Qt.darkGray)
-            selection.format.setBackground(lineColor)
-            selection.format.setProperty(QTextFormat.FullWidthSelection, True)
-            selection.cursor = self.textCursor()
-            selection.cursor.clearSelection()
-            extraSelections.append(selection)
+            self.selection.format.setBackground(lineColor)
+            self.selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+            self.selection.cursor = self.textCursor()
+            #selection.cursor.clearSelection()
+            extraSelections.append(self.selection)
         self.setExtraSelections(extraSelections)
 
     def lineNumberAreaPaintEvent(self, event):

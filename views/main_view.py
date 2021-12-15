@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import QDialogButtonBox, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QMenuBar, QStackedLayout, QVBoxLayout, QPushButton, QWidget \
     , QMenuBar, QMenu, QTextEdit, QGraphicsScene, QGraphicsView, QDialog, QSlider, QStyle, QGraphicsProxyWidget
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QFont, QTextListFormat
 from PySide6.QtMultimedia import QAudio, QAudioOutput, QMediaPlayer
 from PySide6.QtMultimediaWidgets import QGraphicsVideoItem, QVideoWidget
-from PySide6.QtCore import QSizeF, Qt
+from PySide6.QtCore import QSizeF, Qt, QTimer
 from views.QCodeEditor import QCodeEditor
 
 
@@ -58,18 +58,14 @@ class MainView(QMainWindow):
         self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
         self.main_vbox.addWidget(self.graphics_view)
 
-        #self.video_stack = QStackedLayout()
-        #self.main_vbox.addLayout(self.video_stack)
-        #self.video_stack.addWidget(self.graphics_view)
-
         self.subtitle_label = QLabel()
-        self.subtitle_label.setText("Testare!!!!")
+        #self.subtitle_label.setText("Testare!!!!")
         self.subtitle_label.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
         self.subtitle_label.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.subtitle_label.setAttribute(Qt.WA_TranslucentBackground)
+        #self.subtitle_label.adjustSize()
         self.proxy_label = self.scene.addWidget(self.subtitle_label)
         self.proxy_label.setPos(self.scene.width()/2, self.scene.height() - 150)
-        #self.video_stack.setCurrentIndex(1)
 
         self.second_hbox = QHBoxLayout()
         self.main_vbox.addLayout(self.second_hbox)
@@ -104,6 +100,7 @@ class MainView(QMainWindow):
         self.widget = QWidget()
         self.widget.setLayout(self.main_vbox)
         self.setCentralWidget(self.widget)
+        self.setFocusPolicy(Qt.StrongFocus)
 
 
         self.fileMenu.triggered[QAction].connect(self._main_controller.file_handler)
@@ -113,6 +110,21 @@ class MainView(QMainWindow):
         self.add_line_button.clicked.connect(self.add_line)
         self.play_button.clicked.connect(self.my_play)
         self.position_slider.sliderMoved.connect(self.set_position)
+
+        #self.installEventFilter(self)
+        self.text_timer = QTimer(self, timeout=self.update_text, interval=100)
+        self.text_timer.start()
+        self.update_text()
+
+    '''
+    def keyPressEvent(self, qKeyEvent):
+        #print(qKeyEvent.key())
+        if(qKeyEvent.key() == Qt.Key_Enter):
+            print(qKeyEvent.key())
+            print(qKeyEvent.text())
+    '''
+    def update_text(self):
+        self.text = self.text_widget
 
 
     def duration_changed(self, duration):
@@ -156,6 +168,9 @@ class MainView(QMainWindow):
 
     def add_line(self):
         line = self.text_widget.toPlainText()
+        x = self.text_widget.selection
+        print(x.cursor.selectionStart())
+        print(x.cursor.selectionEnd())
         time = self.media_player.position()
         self.text_widget.clear()
         self._main_controller.line_handler(line, time, self.previous_line_time)
