@@ -15,7 +15,7 @@ class QLineNumberArea(QWidget):
 
 
 class QCodeEditor(QPlainTextEdit):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, view=None):
         super().__init__(parent)
         self.lineNumberArea = QLineNumberArea(self)
         self.blockCountChanged.connect(self.updateLineNumberAreaWidth)
@@ -23,12 +23,17 @@ class QCodeEditor(QPlainTextEdit):
         self.cursorPositionChanged.connect(self.highlightCurrentLine)
         self.updateLineNumberAreaWidth(0)
         self.installEventFilter(self)
+        self.view = view
 
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and obj is self:
             if event.key() == Qt.Key_Enter and self.hasFocus():
-                print("Enter pressed")
+                self.replici = self.toPlainText().splitlines()
+                self.indecsi = [i for i in range(len(self.replici))]
+                self.replici_cu_indecsi = list(zip(self.indecsi, self.replici))
+                self.view.add_line()
+                
         return super().eventFilter(obj, event)
         
 

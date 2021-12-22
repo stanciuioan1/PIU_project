@@ -88,11 +88,11 @@ class MainView(QMainWindow):
         self.main_hbox = QHBoxLayout()
         self.main_vbox.addLayout(self.main_hbox)
 
-        self.text_widget = QCodeEditor()
+        self.text_widget = QCodeEditor(view=self)
         self.main_hbox.addWidget(self.text_widget)
 
         self.add_line_button = QPushButton()    # butonul asta nu o sa fie in varianta finala - adaugarea de replica
-                                                # se va face la apasarea tastei 'enter'!
+                                                # se va face la apasarea tastei 'enter'! - vezi timer-ul de la final
         self.add_line_button.setText("Adauga replica")
         self.add_line_button.setMinimumHeight(self.text_widget.height()/4)
         self.main_hbox.addWidget(self.add_line_button)
@@ -112,9 +112,11 @@ class MainView(QMainWindow):
         self.position_slider.sliderMoved.connect(self.set_position)
 
         #self.installEventFilter(self)
+        '''
         self.text_timer = QTimer(self, timeout=self.update_text, interval=100)
         self.text_timer.start()
         self.update_text()
+        '''
 
     '''
     def keyPressEvent(self, qKeyEvent):
@@ -167,13 +169,8 @@ class MainView(QMainWindow):
         self.media_player.pause()
 
     def add_line(self):
-        line = self.text_widget.toPlainText()
-        x = self.text_widget.selection
-        print(x.cursor.selectionStart())
-        print(x.cursor.selectionEnd())
         time = self.media_player.position()
-        self.text_widget.clear()
-        self._main_controller.line_handler(line, time, self.previous_line_time)
+        self._main_controller.line_handler(self.text_widget.replici_cu_indecsi, time, self.previous_line_time)
         self.previous_line_time = time
 
 
