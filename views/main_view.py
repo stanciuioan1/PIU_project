@@ -5,7 +5,7 @@ from PySide6.QtMultimedia import QAudio, QAudioOutput, QMediaPlayer
 from PySide6.QtMultimediaWidgets import QGraphicsVideoItem, QVideoWidget
 from PySide6.QtCore import QSizeF, Qt, QTimer
 from views.QCodeEditor import QCodeEditor
-
+from textparser import *
 
 
 '''
@@ -164,6 +164,8 @@ class MainView(QMainWindow):
     
     def add_media(self):
         self.media_player.setSource(self._main_controller.url)
+        print(self._main_controller.url.toString())
+        break_video(self._main_controller.url.toString())
         self.media_player.setVideoOutput(self.video_item)
         self.media_player.play()
         self.media_player.pause()
