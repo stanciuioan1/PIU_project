@@ -23,9 +23,13 @@ class GreedyCTCDecoder(torch.nn.Module):
 
 def get_transcript_sr(speech_file):
   r = sr.Recognizer()
+  text = 0
   with sr.AudioFile(speech_file) as source:
     audio_data = r.record(source)
-    text = r.recognize_google(audio_data)
+    try:
+      text = r.recognize_google(audio_data)
+    except sr.UnknownValueError:
+      text=""
     return text
 
 def get_transcript_model(speech_file):
@@ -110,6 +114,9 @@ def break_video(src):
 
 
 
+
+
+#compute_break("test111.wav")
   
 
 
