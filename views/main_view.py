@@ -165,7 +165,7 @@ class MainView(QMainWindow):
     def add_media(self):
         self.media_player.setSource(self._main_controller.url)
         print(self._main_controller.url.toString())
-        if(os.name[0] =='w' or os.name[0] =='W'):
+        if(os.name[0] =='n' or os.name[0] =='N'):
             break_video(self._main_controller.url.toString()[8:])
         else:
             break_video(self._main_controller.url.toString())
