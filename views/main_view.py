@@ -58,14 +58,15 @@ class MainView(QMainWindow):
         self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
         self.main_vbox.addWidget(self.graphics_view)
 
-        self.subtitle_label = QLabel()
-        #self.subtitle_label.setText("Testare!!!!")
+        self.subtitle_label = QLabel('Light green', self)
+        self.subtitle_label.resize(500, 50)
+        self.subtitle_label.setStyleSheet("QLabel{font-size: 15pt; font-weight: bold;}")
         self.subtitle_label.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
         self.subtitle_label.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.subtitle_label.setAttribute(Qt.WA_TranslucentBackground)
         #self.subtitle_label.adjustSize()
         self.proxy_label = self.scene.addWidget(self.subtitle_label)
-        self.proxy_label.setPos(self.scene.width()/2, self.scene.height() - 150)
+        self.proxy_label.setPos(self.scene.width()/2 - 200, self.scene.height() - 150)
 
         self.second_hbox = QHBoxLayout()
         self.main_vbox.addLayout(self.second_hbox)
@@ -91,6 +92,12 @@ class MainView(QMainWindow):
         self.text_widget = QCodeEditor(view=self)
         self.main_hbox.addWidget(self.text_widget)
 
+        self.text_widget2 = QCodeEditor(view=self)
+        self.main_hbox.addWidget(self.text_widget2)
+
+        self.text_widget3 = QCodeEditor(view=self)
+        self.main_hbox.addWidget(self.text_widget3)
+
         self.add_line_button = QPushButton()    # butonul asta nu o sa fie in varianta finala - adaugarea de replica
                                                 # se va face la apasarea tastei 'enter'! - vezi timer-ul de la final
         self.add_line_button.setText("Adauga replica")
@@ -112,11 +119,9 @@ class MainView(QMainWindow):
         self.position_slider.sliderMoved.connect(self.set_position)
 
         #self.installEventFilter(self)
-        '''
-        self.text_timer = QTimer(self, timeout=self.update_text, interval=100)
-        self.text_timer.start()
-        self.update_text()
-        '''
+
+        self.text_timer = QTimer(self, timeout=self.update_text, interval=1000)
+        self.counter = 0
 
     '''
     def keyPressEvent(self, qKeyEvent):
@@ -126,7 +131,11 @@ class MainView(QMainWindow):
             print(qKeyEvent.text())
     '''
     def update_text(self):
+        self.counter += 5
         self.text = self.text_widget
+        f2 = open("out_library.srt", "r")
+        content = f2.readlines()
+        self.subtitle_label.setText(content[int(self.position_slider.value() / 1000 / 5)].split("|")[1])
 
 
     def duration_changed(self, duration):
@@ -141,12 +150,15 @@ class MainView(QMainWindow):
         self.media_player.setPosition(position)
 
     def my_play(self):
+        self.counter = 0
         self.counter_play_pause += 1
         if(self.counter_play_pause % 2 == 1):
             self.media_player.play()
+            self.text_timer.start()
             self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.media_player.pause()
+            self.text_timer.stop()
             self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
     
@@ -172,6 +184,15 @@ class MainView(QMainWindow):
         self.media_player.setVideoOutput(self.video_item)
         self.media_player.play()
         self.media_player.pause()
+
+        f1 = open("out_model.srt", "r")
+        f2 = open("out_library.srt", "r")
+        for line in f2.readlines():
+            self.text_widget2.insertPlainText(line)
+        for line in f1.readlines():
+            self.text_widget3.insertPlainText(line)
+        self.text_widget2.setReadOnly(True)
+        self.text_widget3.setReadOnly(True)
 
     def add_line(self):
         time = self.media_player.position()
