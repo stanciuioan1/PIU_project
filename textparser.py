@@ -39,6 +39,8 @@ def get_transcript_model(speech_file):
   model = bundle.get_model().to(device)
   waveform, sample_rate = torchaudio.load(speech_file)
   waveform = waveform.to(device)
+  if sample_rate != bundle.sample_rate:
+    waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
   with torch.inference_mode():
     emission, _ = model(waveform)
 
@@ -54,7 +56,7 @@ def get_transcript_model(speech_file):
           a.append(' ')
       else:
           a.append(transcript[i])
-
+  
   return transcript
 
 
