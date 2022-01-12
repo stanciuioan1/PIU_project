@@ -85,8 +85,8 @@ def compute_break(src):
     print(a)
     print(b)
     print(" ")
-    f1.write(str(beg)+":"+str(end)+ " " + a + "\n")
-    f2.write(str(beg)+":"+str(end)+ " " + b + "\n")
+    f1.write(str(beg)+":"+str(end)+ "\ " + a + "\n")
+    f2.write(str(beg)+":"+str(end)+ "\ " + b + "\n")
     os.remove(SPEECH_FILE)
 
 
