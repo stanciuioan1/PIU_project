@@ -1,4 +1,5 @@
 from PySide6.QtCore import QObject
+import os
 
 
 '''
@@ -21,5 +22,8 @@ class Model(QObject):
         self.lines = temp    
 
     def export_to_srt(self):
-        with open("out.srt", 'w', encoding='utf-8') as f:
-            f.write(self.lines)
+        if os.path.exists("out.srt"):
+            os.remove("out.srt")
+        f1 = open("out.srt", "w")
+        f1.write(str(self.lines))
+        f1.close()

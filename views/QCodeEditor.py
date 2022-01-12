@@ -28,12 +28,11 @@ class QCodeEditor(QPlainTextEdit):
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and obj is self:
-            if event.key() == Qt.Key_Enter and self.hasFocus():
+            if event.key() == Qt.Key_Return and self.hasFocus():
                 self.replici = self.toPlainText().splitlines()
                 self.indecsi = [i for i in range(len(self.replici))]
                 self.replici_cu_indecsi = list(zip(self.indecsi, self.replici))
                 self.view.add_line()
-                
         return super().eventFilter(obj, event)
         
 

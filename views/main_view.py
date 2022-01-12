@@ -64,9 +64,19 @@ class MainView(QMainWindow):
         self.subtitle_label.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
         self.subtitle_label.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.subtitle_label.setAttribute(Qt.WA_TranslucentBackground)
+
+        self.subtitle_label2 = QLabel('Light green', self)
+        self.subtitle_label2.resize(500, 50)
+        self.subtitle_label2.setStyleSheet("QLabel{font-size: 15pt; font-weight: bold;}")
+        self.subtitle_label2.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
+        self.subtitle_label2.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+        self.subtitle_label2.setAttribute(Qt.WA_TranslucentBackground)
         #self.subtitle_label.adjustSize()
         self.proxy_label = self.scene.addWidget(self.subtitle_label)
-        self.proxy_label.setPos(self.scene.width()/2 - 200, self.scene.height() - 150)
+        self.proxy_label.setPos(self.scene.width()/2 - 200, self.scene.height() - 550)
+
+        self.proxy_label2 = self.scene.addWidget(self.subtitle_label2)
+        self.proxy_label2.setPos(self.scene.width()/2 - 200, self.scene.height() - 150)
 
         self.second_hbox = QHBoxLayout()
         self.main_vbox.addLayout(self.second_hbox)
@@ -136,6 +146,7 @@ class MainView(QMainWindow):
         f2 = open("out_library.srt", "r")
         content = f2.readlines()
         self.subtitle_label.setText(content[int(self.position_slider.value() / 1000 / 5)].split("|")[1])
+        self.subtitle_label2.setText(self._model.lines[int(self.position_slider.value() / 10000)][1])
 
 
     def duration_changed(self, duration):
@@ -168,7 +179,7 @@ class MainView(QMainWindow):
             dlg = QDialog(self)
             dlg.setWindowTitle("Success!")
             dlg.exec()
-        except Exception:
+        except Exception as e:
             dlg = QDialog(self)
             dlg.setWindowTitle("Fail")
             
@@ -177,10 +188,10 @@ class MainView(QMainWindow):
     def add_media(self):
         self.media_player.setSource(self._main_controller.url)
         print(self._main_controller.url.toString())
-        if(os.name[0] =='n' or os.name[0] =='N'):
-            break_video(self._main_controller.url.toString()[8:])
-        else:
-            break_video(self._main_controller.url.toString())
+        #if(os.name[0] =='n' or os.name[0] =='N'):
+            #break_video(self._main_controller.url.toString()[8:])
+        #else:
+            #break_video(self._main_controller.url.toString())
         self.media_player.setVideoOutput(self.video_item)
         self.media_player.play()
         self.media_player.pause()
