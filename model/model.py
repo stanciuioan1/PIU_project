@@ -14,12 +14,10 @@ class Model(QObject):
         super().__init__()
         self.lines = []
 
-    def add_line(self, replici_cu_indecsi, time, previous_time):
+    def add_line(self, info):
         #self.lines = self.lines + str(line) + " " + str(previous_time) + ' ' + str(time) + "\n"
-        temp = []
-        for replica in replici_cu_indecsi:
-            temp.append((replica[0], replica[1], previous_time, time))
-        self.lines = temp    
+        self.lines.append(info)
+        #print(str(self.lines))   
 
     def export_to_srt(self):
         if os.path.exists("out.srt"):

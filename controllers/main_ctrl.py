@@ -41,5 +41,6 @@ class MainController(QObject):
         pass
 
     def line_handler(self, replici_cu_indecsi, time, previous_time):
-        #print(line + ' ' + str(previous_time) + ' ' + str(time))
-        self._model.add_line(replici_cu_indecsi, time, previous_time)
+        temp = (replici_cu_indecsi[-1][0], replici_cu_indecsi[-1][1], previous_time, time)
+        #print(replici_cu_indecsi[0][1] + ' ' + str(previous_time) + ' ' + str(time))
+        self._model.add_line(temp)

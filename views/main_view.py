@@ -146,7 +146,14 @@ class MainView(QMainWindow):
         f2 = open("out_library.srt", "r")
         content = f2.readlines()
         self.subtitle_label.setText(content[int(self.position_slider.value() / 1000 / 5)].split("|")[1])
-        self.subtitle_label2.setText(self._model.lines[int(self.position_slider.value() / 10000)][1])
+
+        for element in self._model.lines:
+            if( (int(self.position_slider.value()) < element[3]) & (int(self.position_slider.value()) > element[2]) ):
+                self.subtitle_label2.setText(self._model.lines[element[0]][1])
+        if(  int(self.position_slider.value()) > self._model.lines[-1][3]):
+            self.subtitle_label2.setText("")
+
+        
 
 
     def duration_changed(self, duration):
@@ -169,7 +176,7 @@ class MainView(QMainWindow):
             self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.media_player.pause()
-            self.text_timer.stop()
+            #self.text_timer.stop()
             self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
     
