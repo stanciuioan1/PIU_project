@@ -71,7 +71,6 @@ class MainView(QMainWindow):
         self.subtitle_label2.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
         self.subtitle_label2.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.subtitle_label2.setAttribute(Qt.WA_TranslucentBackground)
-        #self.subtitle_label.adjustSize()
         self.proxy_label = self.scene.addWidget(self.subtitle_label)
         self.proxy_label.setPos(self.scene.width()/2 - 200, self.scene.height() - 550)
 
@@ -108,12 +107,6 @@ class MainView(QMainWindow):
         self.text_widget3 = QCodeEditor(view=self)
         self.main_hbox.addWidget(self.text_widget3)
 
-        self.add_line_button = QPushButton()    # butonul asta nu o sa fie in varianta finala - adaugarea de replica
-                                                # se va face la apasarea tastei 'enter'! - vezi timer-ul de la final
-        self.add_line_button.setText("Adauga replica")
-        self.add_line_button.setMinimumHeight(self.text_widget.height()/4)
-        self.main_hbox.addWidget(self.add_line_button)
-
         self.widget = QWidget()
         self.widget.setLayout(self.main_vbox)
         self.setCentralWidget(self.widget)
@@ -123,8 +116,7 @@ class MainView(QMainWindow):
         self.fileMenu.triggered[QAction].connect(self._main_controller.file_handler)
         self.fileMenu.triggered[QAction].connect(self.add_media)
         self.save_srt.triggered.connect(self.export_to_srt)
-        
-        self.add_line_button.clicked.connect(self.add_line)
+
         self.play_button.clicked.connect(self.my_play)
         self.position_slider.sliderMoved.connect(self.set_position)
 
