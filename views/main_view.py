@@ -6,7 +6,7 @@ from PySide6.QtMultimediaWidgets import QGraphicsVideoItem, QVideoWidget
 from PySide6.QtCore import QSizeF, Qt, QTimer
 from views.QCodeEditor import QCodeEditor
 from textparser import *
-
+from videosaver import *
 
 '''
 Aici definim:
@@ -41,7 +41,9 @@ class MainView(QMainWindow):
         self.load_video = QAction("Load Video", self)
         self.save_video = QAction("Save Video", self)
         self.save_srt = QAction("Save To .srt File", self)
+        self.export_video = QAction("Export video", self)
         self.menuBar.addAction(self.save_srt)
+        self.menuBar.addAction(self.export_video)
         self.fileMenu.addAction(self.load_video)
         self.fileMenu.addAction(self.save_video)
         self.setMenuBar(self.menuBar)
@@ -116,7 +118,7 @@ class MainView(QMainWindow):
         self.fileMenu.triggered[QAction].connect(self._main_controller.file_handler)
         self.fileMenu.triggered[QAction].connect(self.add_media)
         self.save_srt.triggered.connect(self.export_to_srt)
-
+        self.export_video.triggered.connect(self.export_to_video)
         self.play_button.clicked.connect(self.my_play)
         self.position_slider.sliderMoved.connect(self.set_position)
 
@@ -174,7 +176,7 @@ class MainView(QMainWindow):
     
     def export_to_srt(self):
         try:
-            self._model.export_to_srt()
+            self._model.export_to_srt(self.media_player.duration())
             dlg = QDialog(self)
             dlg.setWindowTitle("Success!")
             dlg.exec()
@@ -182,15 +184,22 @@ class MainView(QMainWindow):
             dlg = QDialog(self)
             dlg.setWindowTitle("Fail")
             
+    def export_to_video(self):
+        print("smekery")
+        parse_video(self._main_controller.url.toString())
 
     
     def add_media(self):
         self.media_player.setSource(self._main_controller.url)
         print(self._main_controller.url.toString())
-        #if(os.name[0] =='n' or os.name[0] =='N'):
-            #break_video(self._main_controller.url.toString()[8:])
-        #else:
-            #break_video(self._main_controller.url.toString())
+        
+        if(os.name[0] =='n' or os.name[0] =='N'):
+            break_video(self._main_controller.url.toString()[8:])
+        else:
+            break_video(self._main_controller.url.toString())
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Video loaded!")
+        dlg.exec()
         self.media_player.setVideoOutput(self.video_item)
         self.media_player.play()
         self.media_player.pause()

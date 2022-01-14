@@ -4,7 +4,7 @@
 15000:20000| Stone's you've collected for me create a new one
 20000:25000| teeming life is not what it is last but
 25000:30000| what it is been given
-30000:35000| grateful universe blood will never know
+30000:35000| grateful universe blood
 35000:40000| because you won't be alive to tell them
 40000:45000| 
-45000.0:47450| 
+45000:47450| 

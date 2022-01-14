@@ -93,7 +93,7 @@ def compute_break(src):
 
 
   #last_part
-  beg = intervals * 5000
+  beg = int(intervals * 5000)
   end = len_song
   the_5_seconds = song[beg: end]
 

@@ -19,9 +19,16 @@ class Model(QObject):
         self.lines.append(info)
         #print(str(self.lines))   
 
-    def export_to_srt(self):
+    def export_to_srt(self, duration):
         if os.path.exists("out.srt"):
             os.remove("out.srt")
         f1 = open("out.srt", "w")
-        f1.write(str(self.lines))
+        a=1
+        for i in self.lines:
+            f1.write(str(i[2])+":" + str(i[3])+"|"+i[1]+"\n")
+            a=i[3]
+
+
+        f1.write(str(a)+":" + str(duration)+"| \n")
+        #f1.write(str(self.lines))
         f1.close()
